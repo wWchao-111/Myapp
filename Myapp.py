@@ -22,7 +22,7 @@ def random_expression(max_denominator, max_operators):
 # 检查表达式合法性
 def is_valid(expression):
     parts = expression.split()
-    for i in range(2, len(parts), 2):
+    for i in range(1, len(parts), 2):
         if parts[i] == '-' and fractions.Fraction(parts[i-1]) < fractions.Fraction(parts[i+1]):
             return False
         if parts[i] == '/' and fractions.Fraction(parts[i+1]) == 0:
@@ -77,51 +77,54 @@ def grade(exercises, answers):
 
 
 def main():
-    expressions = generate_expressions(10, 10)
-    with open('Exercises.txt', 'w') as f:
-        for expression in expressions:
-            f.write(expression + ' =\n')
-    with open('Answers.txt', 'w') as f:
-        for expression in expressions:
-            f.write(str(evaluate(expression)) + '\n')
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('-n', type=int, help='number of exercises')
-    # parser.add_argument('-r', type=int, help='range of values')
-    # parser.add_argument('-e', type=str, help='exercise file')
-    # parser.add_argument('-a', type=str, help='answer file')
-    # args = parser.parse_args()
-    #
-    # if args.r is None and args.n is None and args.e is None and args.a is None:
-    #     print("请输入参数")
-    #     print("-n<题目数>")
-    #     print("-r<数值范围>")
-    #     print("-e<练习文件名>")
-    #     print("-a<答案文件名>")
-    #     return
-    # elif args.r is None and args.n is not None or args.r is not None and args.n is None:
-    #     print("-n<题目数>与-r<数值范围>需要同时出现")
-    #     return
-    # elif args.e is None and args.a is not None or args.e is not None and args.a is None:
-    #     print("-e<练习文件名>与-a<答案文件名>需要同时出现")
-    #     return
-    # elif args.n is not None and args.r is not None:
-    #     expressions = generate_expressions(args.n, args.r)
-    #     with open('Exercises.txt', 'w') as f:
-    #         for expression in expressions:
-    #             f.write(expression + ' =\n')
-    #     with open('Answers.txt', 'w') as f:
-    #         for expression in expressions:
-    #             f.write(str(evaluate(expression)) + '\n')
-    #
-    # if args.e is not None and args.a is not None:
-    #     with open(args.e) as f:
-    #         exercises = f.read().splitlines()
-    #     with open(args.a) as f:
-    #         answers = f.read().splitlines()
-    #     correct, wrong = grade(exercises, answers)
-    #     with open('Grade.txt', 'w') as f:
-    #         f.write(f'Correct: {len(correct)} ({", ".join(map(str, correct))})\n')
-    #         f.write(f'Wrong: {len(wrong)} ({", ".join(map(str, wrong))})\n')
+    # # 效能分析代码
+    # expressions = generate_expressions(10, 10)
+    # with open('Exercises.txt', 'w') as f:
+    #     for expression in expressions:
+    #         f.write(expression + ' =\n')
+    # with open('Answers.txt', 'w') as f:
+    #     for expression in expressions:
+    #         f.write(str(evaluate(expression)) + '\n')
+
+    # 主代码
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', type=int, help='number of exercises')
+    parser.add_argument('-r', type=int, help='range of values')
+    parser.add_argument('-e', type=str, help='exercise file')
+    parser.add_argument('-a', type=str, help='answer file')
+    args = parser.parse_args()
+
+    if args.r is None and args.n is None and args.e is None and args.a is None:
+        print("请输入参数")
+        print("-n<题目数>")
+        print("-r<数值范围>")
+        print("-e<练习文件名>")
+        print("-a<答案文件名>")
+        return
+    elif args.r is None and args.n is not None or args.r is not None and args.n is None:
+        print("-n<题目数>与-r<数值范围>需要同时出现")
+        return
+    elif args.e is None and args.a is not None or args.e is not None and args.a is None:
+        print("-e<练习文件名>与-a<答案文件名>需要同时出现")
+        return
+    elif args.n is not None and args.r is not None:
+        expressions = generate_expressions(args.n, args.r)
+        with open('Exercises.txt', 'w') as f:
+            for expression in expressions:
+                f.write(expression + ' =\n')
+        with open('Answers.txt', 'w') as f:
+            for expression in expressions:
+                f.write(str(evaluate(expression)) + '\n')
+
+    if args.e is not None and args.a is not None:
+        with open(args.e) as f:
+            exercises = f.read().splitlines()
+        with open(args.a) as f:
+            answers = f.read().splitlines()
+        correct, wrong = grade(exercises, answers)
+        with open('Grade.txt', 'w') as f:
+            f.write(f'Correct: {len(correct)} ({", ".join(map(str, correct))})\n')
+            f.write(f'Wrong: {len(wrong)} ({", ".join(map(str, wrong))})\n')
 
 
 if __name__ == '__main__':
